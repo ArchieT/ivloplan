@@ -21,9 +21,12 @@ def download(plan=True,zastepstwa=True):
         oj = listape.pop()
         try: p = urllib2.urlopen('http://loiv.torun.pl/'+urllib2.quote(oj)).read()
         except urllib2.HTTPError: print oj, listape ; raise
+        aoj = re.sub("attachments.*30/","",oj)
+    aji = set()
     if zastepstwa:
         for i in listaza:
-            try: zl.add(urllib2.urlopen('http://loiv.torun.pl/'+urllib2.quote(i)).read())
+            try: zl.add((urllib2.urlopen('http://loiv.torun.pl/'+urllib2.quote(i)).read(),re.sub("attachments.*30/","")))
             except urllib2.HTTPError: print i, listaza ; raise
-    return {'p':p,'z':zl}
+            aji.add(re.sub("attachments.*30/",""))
+    return {'p':p,'z':zl},{'p':aoj,'z',aji}
 
