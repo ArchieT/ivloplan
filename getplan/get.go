@@ -36,3 +36,7 @@ func GetInfo() (string, []string) {
 	}
 	return string(wplan[0]), oz
 }
+
+//func GetPlan(u string)
+
+//func GetZasts(ul []string)
