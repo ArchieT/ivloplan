@@ -60,7 +60,7 @@ func GetFile(u string) []byte {
 
 func SaveFiles(ul []string) {
 	for i := range ul {
-		ZapiszPlik(GetFile(ul[i]), ul[i])
+		Save(GetFile(ul[i]), ul[i])
 	}
 }
 
@@ -83,43 +83,26 @@ func DajNazwePliku(s string) string {
 	return a
 }
 
-func ZapiszPlik(cozap []byte, url string) {
+func Save(cozap []byte, url string) {
 	nazwa := DajNazwePliku(url)
-	osstat, err := os.Stat(`./` + nazwa)
-	log.Println("ossabtat:", osstat)
-	var fileopen *os.File
-	var openerr error
-	if err == nil {
-		fileopen, openerr = os.OpenFile(nazwa, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
-		if openerr != nil {
-			log.Fatal(string(openerr.Error()))
-		}
-		fileread, readallerr := ioutil.ReadAll(fileopen)
-		if readallerr != nil {
-			log.Fatal(string(readallerr.Error()))
-		}
-		if bytes.Equal(cozap, fileread) {
-			log.Println("same", url)
-			return
-		}
-	} else {
-		log.Println("creating: osstat-error: ", err)
-		fileopen, openerr = os.Create(nazwa)
-		log.Println("create ", nazwa)
-		if openerr != nil {
-			log.Fatal("createerror", openerr)
-		}
-	}
+	fileopen, err := os.OpenFile(nazwa, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
-	//err = ioutil.WriteFile(nazwa, cozap, 0644)
+	fileread, err := ioutil.ReadAll(fileopen)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if bytes.Equal(cozap, fileread) {
+		log.Println("same", nazwa)
+		return
+	}
 	n, err := fileopen.Write(cozap)
 	if err != nil {
 		log.Fatal(err)
 	}
 	if n < len(cozap) {
-		log.Fatal("Za malo zapisal: ", n, " zamiast ", len(cozap))
+		log.Fatal("Za malo: ", n, " zamiast ", len(cozap))
 	}
 	return
 }
