@@ -85,9 +85,12 @@ func DajNazwePliku(s string) string {
 
 func ZapiszPlik(cozap []byte, url string) {
 	nazwa := DajNazwePliku(url)
-	_, err := os.Stat(`./` + nazwa)
+	osstat, err := os.Stat(`./` + nazwa)
+	log.Println("ossabtat:", osstat)
+	var fileopen *os.File
+	var openerr error
 	if err == nil {
-		fileopen, openerr := os.Open(`./` + nazwa)
+		fileopen, openerr = os.OpenFile(nazwa, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 		if openerr != nil {
 			log.Fatal(string(openerr.Error()))
 		}
@@ -100,15 +103,23 @@ func ZapiszPlik(cozap []byte, url string) {
 			return
 		}
 	} else {
-		os.Create(`./` + nazwa)
+		log.Println("creating: osstat-error: ", err)
+		fileopen, openerr = os.Create(nazwa)
 		log.Println("create ", nazwa)
+		if openerr != nil {
+			log.Fatal("createerror", openerr)
+		}
 	}
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = ioutil.WriteFile(`./`+nazwa, cozap, 0644)
+	//err = ioutil.WriteFile(nazwa, cozap, 0644)
+	n, err := fileopen.Write(cozap)
 	if err != nil {
 		log.Fatal(err)
+	}
+	if n < len(cozap) {
+		log.Fatal("Za malo zapisal: ", n, " zamiast ", len(cozap))
 	}
 	return
 }
