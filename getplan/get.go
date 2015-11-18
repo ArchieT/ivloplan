@@ -97,6 +97,10 @@ func Save(cozap []byte, url string) {
 		log.Println("same", nazwa)
 		return
 	}
+	if len(fileread) > 100 {
+		Save(cozap, url+`_new.pdf`)
+		return
+	}
 	n, err := fileopen.Write(cozap)
 	if err != nil {
 		log.Fatal(err)
