@@ -2,7 +2,7 @@ package getplan
 
 import (
 	"bytes"
-	"fmt"
+	//"fmt"
 	//	"io"
 	"io/ioutil"
 	"log"
@@ -70,7 +70,7 @@ func findByte(s string, char byte) int {
 	for i := range bs {
 		if bs[i] == char {
 			last = i
-			fmt.Println(string(bs[i+1:]))
+			//fmt.Println(string(bs[i+1:]))
 		}
 	}
 	return last + 1
@@ -79,13 +79,14 @@ func findByte(s string, char byte) int {
 func DajNazwePliku(s string) string {
 	last := findByte(s, []byte(`/`)[0])
 	a := string([]byte(s)[last:])
-	fmt.Println(a)
+	//fmt.Println(a)
 	return a
 }
 
 func Save(cozap []byte, url string) {
 	nazwa := DajNazwePliku(url)
 	fileopen, err := os.OpenFile(nazwa, os.O_RDWR|os.O_CREATE, 0644)
+	defer fileopen.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -112,5 +113,8 @@ func Save(cozap []byte, url string) {
 }
 
 func FullService() {
+	logfile := os.OpenFile("log.soft.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	defer logfile.Close()
+	log.SetOutput(logfile)
 	SaveFiles(GetLinks())
 }
