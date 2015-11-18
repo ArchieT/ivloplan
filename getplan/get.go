@@ -113,8 +113,11 @@ func Save(cozap []byte, url string) {
 }
 
 func FullService() {
-	logfile := os.OpenFile("log.soft.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	logfile, err := os.OpenFile("log.soft.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	defer logfile.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 	log.SetOutput(logfile)
 	SaveFiles(GetLinks())
 }
