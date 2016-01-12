@@ -109,6 +109,7 @@ func Save(cozap []byte, url string) {
 	if n < len(cozap) {
 		log.Fatal("Za malo: ", n, " zamiast ", len(cozap))
 	}
+	log.Println("SAVED", cozap)
 	return
 }
 
