@@ -1,5 +1,5 @@
 Options +Indexes
-AddDefaultChartse utf-8
+AddDefaultCharset utf-8
 DefaultLanguage pl
 
 <IfModule mod_autoindex.c>
