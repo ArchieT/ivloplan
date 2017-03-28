@@ -11,6 +11,8 @@ import (
 	"os"
 	"regexp"
 	//	"strings"
+	"crypto/sha1"
+	"fmt"
 )
 
 var Replan = regexp.MustCompile(`attachments.{6,26}plan_KLAS.pdf`)
@@ -29,7 +31,7 @@ func GetLinks() []string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	repdf := regexp.MustCompile(`attachments.{10,50}\.pdf`)
+	repdf := regexp.MustCompile(`attachments.{10,50}\.[px][dl][sf]x?`)
 	ourw, werr := ioutil.ReadAll(we.Body)
 	if werr != nil {
 		log.Fatal(err)
@@ -109,12 +111,12 @@ func Save(cozap []byte, url string) {
 	if n < len(cozap) {
 		log.Fatal("Za malo: ", n, " zamiast ", len(cozap))
 	}
-	log.Println("SAVED", cozap)
+	log.Println("SAVED", fmt.Sprintf("%x", sha1.Sum(cozap))+" — "+nazwa)
 	return
 }
 
 func FullService() {
-	logfile, err := os.OpenFile("log.soft.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	logfile, err := os.OpenFile("log.better.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	defer logfile.Close()
 	if err != nil {
 		log.Fatal(err)
